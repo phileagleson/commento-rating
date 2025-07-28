@@ -1,18 +1,30 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
-	"golang.org/x/oauth2"
-	"io/ioutil"
+	"io"
 	"net/http"
 )
 
 func githubGetPrimaryEmail(accessToken string) (string, error) {
-	resp, err := http.Get("https://api.github.com/user/emails?access_token=" + accessToken)
+	req, err := http.NewRequest("GET", "https://api.github.com/user/emails", nil)
+	if err != nil {
+		return "", errorInternal
+	}
+	req.Header.Set("Authorization", "Bearer "+accessToken)
+	req.Header.Set("Accept", "application/vnd.github.v3+json")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return "", errorCannotReadResponse
+	}
+
 	defer resp.Body.Close()
 
-	contents, err := ioutil.ReadAll(resp.Body)
+	contents, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return "", errorCannotReadResponse
 	}
@@ -44,7 +56,7 @@ func githubCallbackHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := githubConfig.Exchange(oauth2.NoContext, code)
+	token, err := githubConfig.Exchange(context.Background(), code)
 	if err != nil {
 		fmt.Fprintf(w, "Error: %s", err.Error())
 		return
@@ -56,14 +68,24 @@ func githubCallbackHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp, err := http.Get("https://api.github.com/user?access_token=" + token.AccessToken)
+	req, err := http.NewRequest("GET", "https://api.github.com/user", nil)
 	if err != nil {
 		fmt.Fprintf(w, "Error: %s", err.Error())
 		return
 	}
+	req.Header.Set("Authorization", "Bearer "+token.AccessToken)
+	req.Header.Set("Accept", "application/vnd.github.v3+json")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Fprintf(w, "Error: %s", err.Error())
+		return
+	}
+
 	defer resp.Body.Close()
 
-	contents, err := ioutil.ReadAll(resp.Body)
+	contents, err := io.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Fprintf(w, "Error: %s", errorCannotReadResponse.Error())
 		return
