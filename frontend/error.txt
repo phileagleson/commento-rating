@@ -1,0 +1,87 @@
+
+node:events:485
+      throw er; // Unhandled 'error' event
+      ^
+<ref *1> [PluginError [ESLintError]: Failed with 1 error] {
+  plugin: 'gulp-eslint',
+  showProperties: true,
+  showStack: false,
+  __safety: { toString: [Function: bound ] },
+  domainEmitter: Transform {
+    _events: {
+      close: [Function: onclose],
+      error: undefined,
+      prefinish: [Function: prefinish],
+      finish: [Function: onfinish],
+      drain: undefined,
+      data: [Function: ondata],
+      end: [
+        [Function: bound onceWrapper] { listener: [Function: onend] },
+        [Function: onend]
+      ],
+      readable: undefined,
+      unpipe: undefined
+    },
+    _readableState: ReadableState {
+      highWaterMark: 16,
+      buffer: [],
+      bufferIndex: 0,
+      length: 0,
+      pipes: [
+        Sink {
+          _events: {
+            close: [Function],
+            error: [Function: onerror],
+            prefinish: undefined,
+            finish: [Function],
+            drain: undefined,
+            unpipe: [Function: onunpipe]
+          },
+          _writableState: WritableState {
+            highWaterMark: 16,
+            length: 1,
+            corked: 0,
+            onwrite: [Function: bound onwrite],
+            writelen: 1,
+            bufferedIndex: 0,
+            pendingcb: 1,
+            Symbol(kState): 84721933,
+            Symbol(kBufferedValue): null,
+            Symbol(kWriteCbValue): null
+          },
+          _maxListeners: undefined,
+          _eventsCount: 4,
+          Symbol(shapeMode): true,
+          Symbol(kCapture): false
+        }
+      ],
+      awaitDrainWriters: null,
+      Symbol(kState): 194521535,
+      Symbol(kErroredValue): [Circular *1]
+    },
+    _writableState: WritableState {
+      highWaterMark: 16,
+      length: 0,
+      corked: 0,
+      onwrite: [Function: bound onwrite],
+      writelen: 0,
+      bufferedIndex: 0,
+      pendingcb: 1,
+      Symbol(kState): 1091327423,
+      Symbol(kBufferedValue): null,
+      Symbol(kWriteCbValue): null,
+      Symbol(kErroredValue): [Circular *1]
+    },
+    allowHalfOpen: true,
+    _maxListeners: undefined,
+    _transform: [Function (anonymous)],
+    _flush: [Function (anonymous)],
+    _eventsCount: 5,
+    Symbol(shapeMode): true,
+    Symbol(kCapture): false,
+    Symbol(kCallback): null
+  },
+  domainThrown: false
+}
+
+Node.js v24.4.0
