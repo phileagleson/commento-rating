@@ -2290,46 +2290,50 @@
     try {
       resp = await fetch(origin + "/api/recipe/rating", opts)
       const jsonRes = await resp.json();
-      if (jsonRes.rating && jsonRes.total) {
-        const mainRatingDiv = document.querySelector("#main-rating")
-        for (var x = 0; x < NUM_STARS; x++) {
-          const newStar = create("button");
-          newStar.classList.add('star-readonly');
-          if (jsonRes.rating >= x + 1) {
-            newStar.innerHTML = FILLED_STAR;
-            newStar.classList.add('full')
-          }
-          else {
-            newStar.innerHTML = EMPTY_STAR;
-            newStar.classList.add('empty')
-          }
-
-          append(mainRatingDiv, newStar);
+      //if (jsonRes.rating && jsonRes.total) {
+      const mainRatingDiv = document.querySelector("#main-rating")
+      for (var x = 0; x < NUM_STARS; x++) {
+        const newStar = create("button");
+        newStar.classList.add('star-readonly');
+        if (jsonRes.rating && jsonRes.rating >= x + 1) {
+          newStar.innerHTML = FILLED_STAR;
+          newStar.classList.add('full')
+        }
+        else {
+          newStar.innerHTML = EMPTY_STAR;
+          newStar.classList.add('empty')
         }
 
-        const partialPercent = parseFloat(jsonRes.rating) % 1
-        const percentString = (partialPercent * 100).toFixed(2)
-        if (partialPercent > 0.00) {
-          const allStars = document.querySelectorAll("#main-rating .star-readonly")
-          const baseRating = Math.floor(parseFloat(jsonRes.rating))
-          console.log("baseRating:", baseRating);
-          allStars.forEach((star, idx) => {
-            if (idx + 1 == baseRating + 1) {
-              star.classList.add('partial')
-              star.style.setProperty('--fill', `${percentString}%`);
-            } else {
-              star.classList.remove('partial')
-            }
-
-          })
-        }
-
-        const totalSpan = create("span");
-        totalSpan.id = ID_RATING_TOTAL_SPAN
-        var s = jsonRes.total > 1 ? 's' : '';
-        totalSpan.innerText = `(${jsonRes.total} rating${s} - ${jsonRes.rating.toFixed(2)}/5)`;
-        append(mainRatingDiv, totalSpan);
+        append(mainRatingDiv, newStar);
       }
+
+      const partialPercent = parseFloat(jsonRes.rating) % 1
+      const percentString = (partialPercent * 100).toFixed(2)
+      if (partialPercent > 0.00) {
+        const allStars = document.querySelectorAll("#main-rating .star-readonly")
+        const baseRating = Math.floor(parseFloat(jsonRes.rating))
+        console.log("baseRating:", baseRating);
+        allStars.forEach((star, idx) => {
+          if (idx + 1 == baseRating + 1) {
+            star.classList.add('partial')
+            star.style.setProperty('--fill', `${percentString}%`);
+          } else {
+            star.classList.remove('partial')
+          }
+
+        })
+      }
+
+      const totalSpan = create("span");
+      totalSpan.id = ID_RATING_TOTAL_SPAN
+      var s = jsonRes.total > 1 ? 's' : '';
+      if (jsonRes.total && jsonRes.total > 0) {
+        totalSpan.innerText = `(${jsonRes.total} rating${s} - ${jsonRes.rating.toFixed(2)} out of 5)`;
+      } else {
+        totalSpan.innerText = `(No ratings yet)`;
+      }
+      append(mainRatingDiv, totalSpan);
+      //}
 
     } catch (error) {
       console.error(error.message);
